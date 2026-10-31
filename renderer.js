@@ -16,16 +16,16 @@ const forwardBtn = document.getElementById('forwardBtn');
 const reloadBtn = document.getElementById('reloadBtn');
 const darkModeBtn = document.getElementById('darkModeBtn');
 const extensionsBtn = document.getElementById('extensionsBtn');
+const museBtn = document.getElementById('museBtn');
+const musePanel = document.getElementById('musePanel');
+const museWebview = document.getElementById('museWebview');
+const museCloseBtn = document.getElementById('museCloseBtn');
 const extensionsPanel = document.getElementById('extensionsPanel');
 const extCloseBtn = document.getElementById('extCloseBtn');
 const extAddBtn = document.getElementById('extAddBtn');
 const extOpenFolderBtn = document.getElementById('extOpenFolderBtn');
 const extReloadBtn = document.getElementById('extReloadBtn');
 const extList = document.getElementById('extList');
-const museBtn = document.getElementById('museBtn');
-const museSidebar = document.getElementById('museSidebar');
-const museCloseBtn = document.getElementById('museCloseBtn');
-const museWebview = document.getElementById('museWebview');
 
 function createTab(url = 'about:blank', isActive = true) {
   const id = ++tabIdCounter;
@@ -153,6 +153,23 @@ function toggleExtensionsPanel() {
 }
 
 extensionsBtn.addEventListener('click', toggleExtensionsPanel);
+museBtn.addEventListener('click', () => {
+  const opening = musePanel.classList.contains('hidden');
+  musePanel.classList.remove('hidden');
+  if (!opening) return;
+
+  // A webview may still be starting when its hidden pane first becomes visible.
+  // Retry on each open if it has not navigated to Muse yet.
+  try {
+    const currentURL = museWebview.getURL();
+    if (!currentURL || currentURL === 'about:blank' || !currentURL.startsWith('https://muse.ai')) {
+      museWebview.loadURL('https://muse.ai');
+    }
+  } catch (error) {
+    museWebview.loadURL('https://muse.ai');
+  }
+});
+museCloseBtn.addEventListener('click', () => musePanel.classList.add('hidden'));
 extCloseBtn.addEventListener('click', () => extensionsPanel.classList.add('hidden'));
 
 async function refreshExtensions() {
@@ -247,34 +264,6 @@ extOpenFolderBtn.addEventListener('click', () => {
 extReloadBtn.addEventListener('click', async () => {
   await window.electronAPI.extensions.reload();
   refreshExtensions();
-});
-
-// ===========================================================================
-// Muse AI Sidebar
-// ===========================================================================
-// First-party sidebar pane (not a Chrome extension: Electron's extension
-// loader does not implement chrome.sidePanel, so the sidebar lives in the
-// browser UI itself). The pane sits OUTSIDE webviewContainer, so tab
-// switching (activateTab) never hides it, and it uses the same
-// 'persist:surf-fed' partition as every tab, so the Muse login persists
-// across restarts exactly like any other site login.
-
-let museLoaded = false;
-
-function toggleMuseSidebar() {
-  const willOpen = museSidebar.classList.contains('hidden');
-  museSidebar.classList.toggle('hidden');
-  museBtn.classList.toggle('active', willOpen);
-  if (willOpen && !museLoaded) {
-    museLoaded = true;
-    museWebview.loadURL('https://muse.ai');
-  }
-}
-
-museBtn.addEventListener('click', toggleMuseSidebar);
-museCloseBtn.addEventListener('click', () => {
-  museSidebar.classList.add('hidden');
-  museBtn.classList.remove('active');
 });
 
 createTab('https://www.google.com', true);
