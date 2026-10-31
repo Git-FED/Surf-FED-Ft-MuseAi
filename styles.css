@@ -311,3 +311,49 @@ body.dark-mode .ext-remove-btn:hover { background: #3a2a2a; }
 body.dark-mode .ext-slider { background: #555; }
 body.dark-mode .ext-hint { color: #777; border-top: 1px solid #333; }
 
+/* ---------- Muse AI Sidebar ---------- */
+/* First-party sidebar pane. #mainRow holds the tab webviews on the left and
+   the Muse pane on the right. The pane is outside #webviewContainer so tab
+   switching never hides it. */
+#mainRow { flex: 1; display: flex; min-height: 0; }
+#museSidebar {
+  width: 380px;
+  max-width: 45vw;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-left: 1px solid #ccc;
+  min-height: 0;
+}
+#museSidebar.hidden { display: none; }
+/* The global `webview { display: none }` rule hides tab webviews until they
+   are activated. The Muse pane is not a tab, so it always shows. */
+#museSidebar webview { flex: 1; display: block; width: 100%; }
+.muse-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+}
+.muse-sidebar-title { font-size: 14px; font-weight: 600; }
+.muse-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #555;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.muse-close:hover { background: #eee; }
+#museBtn.active { background: #5d5d5d; }
+
+/* ---------- Dark mode for Muse sidebar ---------- */
+body.dark-mode #museSidebar { background: #1e1e1e; border-left-color: #333; }
+body.dark-mode .muse-sidebar-header { border-bottom-color: #333; }
+body.dark-mode .muse-close { color: #bbb; }
+body.dark-mode .muse-close:hover { background: #333; }
+

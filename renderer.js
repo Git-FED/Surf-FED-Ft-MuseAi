@@ -22,6 +22,10 @@ const extAddBtn = document.getElementById('extAddBtn');
 const extOpenFolderBtn = document.getElementById('extOpenFolderBtn');
 const extReloadBtn = document.getElementById('extReloadBtn');
 const extList = document.getElementById('extList');
+const museBtn = document.getElementById('museBtn');
+const museSidebar = document.getElementById('museSidebar');
+const museCloseBtn = document.getElementById('museCloseBtn');
+const museWebview = document.getElementById('museWebview');
 
 function createTab(url = 'about:blank', isActive = true) {
   const id = ++tabIdCounter;
@@ -243,6 +247,34 @@ extOpenFolderBtn.addEventListener('click', () => {
 extReloadBtn.addEventListener('click', async () => {
   await window.electronAPI.extensions.reload();
   refreshExtensions();
+});
+
+// ===========================================================================
+// Muse AI Sidebar
+// ===========================================================================
+// First-party sidebar pane (not a Chrome extension: Electron's extension
+// loader does not implement chrome.sidePanel, so the sidebar lives in the
+// browser UI itself). The pane sits OUTSIDE webviewContainer, so tab
+// switching (activateTab) never hides it, and it uses the same
+// 'persist:surf-fed' partition as every tab, so the Muse login persists
+// across restarts exactly like any other site login.
+
+let museLoaded = false;
+
+function toggleMuseSidebar() {
+  const willOpen = museSidebar.classList.contains('hidden');
+  museSidebar.classList.toggle('hidden');
+  museBtn.classList.toggle('active', willOpen);
+  if (willOpen && !museLoaded) {
+    museLoaded = true;
+    museWebview.loadURL('https://muse.ai');
+  }
+}
+
+museBtn.addEventListener('click', toggleMuseSidebar);
+museCloseBtn.addEventListener('click', () => {
+  museSidebar.classList.add('hidden');
+  museBtn.classList.remove('active');
 });
 
 createTab('https://www.google.com', true);
