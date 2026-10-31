@@ -1,4 +1,5 @@
-<img width="2560" height="1440" alt="surf-fed-launch-05" src="https://github.com/user-attachments/assets/b125ec41-c08f-4aa5-98f1-c3b40d1b3422" />
+<img width="1281" height="697" alt="Screenshot 2026-10-31 170913" src="https://github.com/user-attachments/assets/481fa5e0-1ef6-458b-940c-d19ed1fb5cf4" />
+
 [README.md](https://github.com/user-attachments/files/31333509/README.md)
 # Electron Browser (starter)
 
